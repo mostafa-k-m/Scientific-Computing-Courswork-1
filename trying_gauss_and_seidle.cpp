@@ -4,6 +4,7 @@
 
 using namespace std;
 
+
 int main()
 {
     // vector<vector<float>> v ={{2, 1, -1}, {1, 4, 3}, {-1 ,2 ,7}};
@@ -18,7 +19,7 @@ int main()
     // Matrix A = Matrix(v);
     // vector<float> b = {18, 18, 26};
 
-    vector<vector<float>> v = {{-1, 1, -1, 1}, {1, 1, 1, 1}, {8, 4, 2, 1}, {27, 9, 3, 1}};
+    vector<vector<float>> v ={{-1,1,-1,1}, {1, 1, 1, 1}, {8, 4 ,2 ,1}, {27, 9, 3, 1}};
     Matrix A = Matrix(v);
     vector<float> b = {1, 1, -2, 1};
 
@@ -26,7 +27,7 @@ int main()
     // Matrix A = Matrix(v);
     // vector<float> b = {-4, 1, 2, 10};
 
-    SolveGaussElimination x = SolveGaussElimination(A, b);
+    SolveGaussElimination x = SolveGaussElimination(A, b, true);
     cout << endl
          << endl;
 

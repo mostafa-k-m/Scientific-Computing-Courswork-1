@@ -131,7 +131,7 @@ public:
         cout << ")" << endl;
     }
 
-    SolveGaussElimination(Matrix A, vector<float> b)
+    SolveGaussElimination(Matrix A, vector<float> b, bool verbose)
     {
         bool singular_flag = A.flag_singular();
         bool ill_conditioned_flag = A.flag_ill_conditioned();
@@ -140,28 +140,39 @@ public:
         bool valid_solution = (singular_flag && ill_conditioned_flag && size_correct);
 
         if (valid_solution)
-        {
+        {   
             A = rearrange_rows(A, A.dim);
-
-            cout << "Matrix Rearranged" << endl;
-            print_aug_matrix(A);
+            if (verbose) {
+                cout << "Matrix Rearranged" << endl;
+                print_aug_matrix(A);
+            }
 
             A.scale_matrix();
-            cout << "Matrix Scaled" << endl;
-            print_aug_matrix(A);
+            if (verbose) {
+                cout << "Matrix Scaled" << endl;
+                print_aug_matrix(A);
+            }
 
             A = convert_to_triangular(A);
 
-            cout << "Matrix in Triangular Form" << endl;
-            print_aug_matrix(A);
+            A.scale_matrix();
 
-            cout << "Matrix in Row Echelon Form" << endl;
+
+           
             A.row_echelon_form();
-            print_aug_matrix(A);
+
+            if (verbose) {
+                cout << "Matrix in Row Echelon Form" << endl;
+                print_aug_matrix(A);
+            }
+
 
             solution = get_solution(A);
-            cout << "The Solution is: " << endl;
-            print_solution(solution, A.dim);
+
+                if (verbose) {
+                cout << "The Solution is: " << endl;
+                print_solution(solution, A.dim);
+            }
         }
         else if (!size_correct)
         {

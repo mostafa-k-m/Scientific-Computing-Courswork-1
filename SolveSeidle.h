@@ -23,23 +23,6 @@ public:
         cout << ")" << endl;
     }
 
-    Matrix put_in_diagonal(Matrix A)
-    {
-        float result;
-        for (int i = 0; i < A.dim; i++)
-        {
-
-            float sum = 0;
-            for (int j = 0; j < A.dim; j++)
-                sum += abs(A.get_row(i)[j]);
-
-            sum -= abs(A.get_row(i)[i]);
-
-            if (abs(A.get_row(i)[i]) < abs(sum))
-                result += abs(abs(A.get_row(i)[i]) - abs(sum));
-        }
-    }
-
     SolveSeidle(Matrix A, vector<float> b, int n)
     {
         vector<float> x;
