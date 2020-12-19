@@ -292,7 +292,7 @@ public:
             temp = A.get_row(i)[A.dim];
             for (int j = A.dim - 1; j > i; --j)
             {
-                temp += -1 * A.get_row(i)[j] * temp_vec[-1 * (j + 1 - 3)];
+                temp += -1 * A.get_row(i)[j] * temp_vec[-1 * (j + 1 - A.dim)];
             }
             temp_vec.push_back(temp);
         }
@@ -373,8 +373,8 @@ public:
 
 int main()
 {
-    Matrix A = Matrix(3);
-    vector<float> b = {0, 14, 30};
+    Matrix A = Matrix(4);
+    vector<float> b = {1, 1, -2 ,1};
     Solve x = Solve(A, b);
     return 0;
 }
