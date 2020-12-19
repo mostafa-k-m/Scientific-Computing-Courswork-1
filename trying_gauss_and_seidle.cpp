@@ -1,6 +1,6 @@
-#include "Matrix.h"
-#include "SolveGaussElimination.h"
-#include "SolveSeidle.h"
+#include "Coursework1/Matrix.h"
+#include "Coursework1/SolveGaussElimination.h"
+#include "Coursework1/SolveSeidle.h"
 
 using namespace std;
 
