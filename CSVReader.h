@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <sstream>
 #include <vector>
 
 using namespace std;
@@ -14,13 +15,26 @@ public:
 
     int count_cols(string s)
     {
-        int count = 0;
+        int count = 1;
 
         for (int i = 0; i < s.size(); i++)
             if (s[i] == ',')
-                count++;
+            {
+                count += 1;
+            }
+        return count;
+    }
 
-        return count + 1;
+    vector<string> splitcomma(string str)
+    {
+        stringstream ss(str);
+        vector<string> tokens;
+        string temp_str;
+        while (getline(ss, temp_str, ','))
+        {
+            tokens.push_back(temp_str);
+        }
+        return tokens;
     }
 
     CSVReader(string input_file_name)
@@ -30,28 +44,26 @@ public:
 
         while (input_file.good())
         {
-            string cell;
-
+            string line;
+            getline(input_file, line);
             if (count == 0)
             {
-                getline(input_file, cell);
-                n_cols = count_cols(cell);
+                n_cols = count_cols(line);
+                col_names = splitcomma(line);
                 for (int i = 0; i < n_cols; i++)
                 {
-                    string header;
-                    getline(input_file, header, ',');
-                    col_names.push_back(header);
+                    vector<float> row;
+                    data.push_back(row);
                 }
+                count++;
             }
             else
             {
-                vector<float> row;
+                vector<string> row = splitcomma(line);
                 for (int i = 0; i < n_cols; i++)
                 {
-                    getline(input_file, cell, ',');
-                    row.push_back(stod(cell));
+                    data[i].push_back(stod(row[i]));
                 }
-                data.push_back(row);
             }
         }
         this->data > data;
