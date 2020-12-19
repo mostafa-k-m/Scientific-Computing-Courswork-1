@@ -29,11 +29,12 @@ public:
         this->dim > dim;
     }
 
-    void augment_matrix(vector<float> vec)
+    bool augment_matrix(vector<float> vec)
     {
         if (vec.size() != dim)
         {
             cout << "vector is of in correct size";
+            return false;
         }
         else
         {
@@ -42,6 +43,7 @@ public:
                 mat[i].push_back(vec[i]);
             }
         }
+        return true;
     }
 
     vector<float> get_row(int x)
@@ -324,11 +326,12 @@ public:
     {
         bool singular_flag = A.flag_singular();
         bool ill_conditioned_flag = A.flag_ill_conditioned();
-        bool valid_solution = (singular_flag && ill_conditioned_flag);
+        bool size_correct = A.augment_matrix(b);
+
+        bool valid_solution = (singular_flag && ill_conditioned_flag && size_correct);
 
         if (valid_solution)
         {
-            A.augment_matrix(b);
             A = rearrange_rows(A, A.dim);
 
             cout << "Matrix Rearranged" << endl;
@@ -353,7 +356,11 @@ public:
                  << "(";
             print_solution(solution, A.dim);
         }
-        else if (A.flag_singular())
+        else if (!size_correct)
+        {
+            cout << "The sizes of the vector and Matrix provided do not match" << endl;
+        }
+        else if (!ill_conditioned_flag)
         {
             cout << "This Matrix is ill-conditioned";
         }
