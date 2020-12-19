@@ -10,21 +10,29 @@ public:
     int dim;
     vector<vector<float>> mat;
 
-    Matrix(int x)
-    {
-        dim = x;
-        for (int i = 0; i < dim; ++i)
-        {
-            float input;
-            vector<float> tempVec;
-            for (int j = 0; j < dim; ++j)
-            {
-                cout << "Enter matrix element " << i + 1 << " , " << j + 1 << ": ";
-                cin >> input;
-                tempVec.push_back(input);
-            }
-            mat.push_back(tempVec);
-        }
+    // Matrix(int x)
+    // {
+    //     dim = x;
+    //     for (int i = 0; i < dim; ++i)
+    //     {
+    //         float input;
+    //         vector<float> tempVec;
+    //         for (int j = 0; j < dim; ++j)
+    //         {
+    //             cout << "Enter matrix element " << i + 1 << " , " << j + 1 << ": ";
+    //             cin >> input;
+    //             tempVec.push_back(input);
+    //         }
+    //         mat.push_back(tempVec);
+    //     }
+    //     this->mat > mat;
+    //     this->dim > dim;
+    // }
+    
+    Matrix(vector<vector<float>> in_mat)
+    {   
+        mat = in_mat;
+        dim = mat.size();
         this->mat > mat;
         this->dim > dim;
     }
@@ -74,26 +82,11 @@ public:
         float max;
         float temp;
 
-        if (vec[0] >= 0)
-        {
-            max = vec[0];
-        }
-        else
-        {
-            max = vec[0] * -1;
-        }
+        max = abs(vec[0]);
 
         for (int i = 0; i < dim; ++i)
         {
-
-            if (vec[i] >= 0)
-            {
-                temp = vec[i];
-            }
-            else
-            {
-                temp = vec[i] * -1;
-            }
+            temp = abs(vec[i]);
 
             if (temp > max)
             {
@@ -178,37 +171,41 @@ public:
         }
         return true;
     }
+
+    bool flag_diagonally_dominant()
+    { 
+        for (int i = 0; i < dim; i++) 
+    {         
+            float sum = 0; 
+            for (int j = 0; j < dim; j++)              
+                sum += abs(mat[i][j]);         
+    
+            sum -= abs(mat[i][i]); 
+    
+            if (abs(mat[i][i]) < sum)  
+                return false;  
+        } 
+        return true; 
+    } 
 };
 
 class Solve
 {
 public:
+    vector<float> solution;
+
     float get_abs_max_index(vector<float> vec, int dim, int row_ix)
     {
         float max = vec[row_ix];
 
-        if (vec[row_ix] >= 0)
-        {
-            max = vec[row_ix];
-        }
-        else
-        {
-            max = vec[row_ix] * -1;
-        }
+        max = abs(vec[row_ix]);
 
         float temp;
         int max_ix = row_ix;
 
         for (int i = row_ix; i < dim; ++i)
         {
-            if (vec[i] >= 0)
-            {
-                temp = vec[i];
-            }
-            else
-            {
-                temp = vec[i] * -1;
-            }
+            temp = abs(vec[i]);
 
             if (temp > max)
             {
@@ -308,6 +305,7 @@ public:
 
     void print_solution(vector<float> solution, int dim)
     {
+        cout << "(";
         for (int i = 0; i < dim; ++i)
         {
             if (i == dim - 1)
@@ -330,6 +328,8 @@ public:
 
         bool valid_solution = (singular_flag && ill_conditioned_flag && size_correct);
 
+
+
         if (valid_solution)
         {
             A = rearrange_rows(A, A.dim);
@@ -350,10 +350,8 @@ public:
             A.row_echelon_form();
             print_aug_matrix(A);
 
-            vector<float> solution;
             solution = get_solution(A);
-            cout << "The Solution is: " << endl
-                 << "(";
+            cout << "The Solution is: " << endl;
             print_solution(solution, A.dim);
         }
         else if (!size_correct)
@@ -368,13 +366,117 @@ public:
         {
             cout << "This Matrix is Singular";
         }
+        this-> solution > solution;
+    }
+};
+
+class SolveSeidle 
+{
+public:
+    int n_iterations;
+    vector<float> solution;
+
+    void print_solution(vector<float> solution, int dim)
+    {
+        cout << "(";
+        for (int i = 0; i < dim; ++i)
+        {
+            if (i == dim - 1)
+            {
+                cout << solution[i];
+            }
+            else
+            {
+                cout << solution[i] << ", ";
+            }
+        }
+        cout << ")" << endl;
+    }
+
+    Matrix put_in_diagonal(Matrix A)
+    {
+        float result;
+        for (int i = 0; i < A.dim; i++) 
+        { 
+  
+        float sum = 0; 
+        for (int j = 0; j < A.dim; j++) 
+            sum += abs(A.get_row(i)[j]); 
+  
+        sum -= abs(A.get_row(i)[i]); 
+  
+        if (abs(A.get_row(i)[i]) < abs(sum)) 
+            result += abs(abs(A.get_row(i)[i]) - abs(sum)); 
+        } 
+    }
+
+    SolveSeidle(Matrix A, vector<float> b, int n)
+    {
+        vector<float> x;
+
+        bool valid_solution = A.flag_diagonally_dominant();
+        
+        if (valid_solution)
+        {    
+            n_iterations = n;
+            for  (int i = 0; i < A.dim; i++)
+            {
+                x.push_back(0);
+                solution.push_back(0);
+            }
+            while (n_iterations > 0)
+            {
+                cout << "iteration " << (n-n_iterations+1) << ": " << endl;
+                for (int i = 0; i < A.dim; i++)
+                {
+                    solution[i] = (b[i] / A.get_row(i)[i]);
+                    for (int j = 0; j < A.dim; j++)
+                    {
+                        if (j != i)
+                        {
+                            solution[i] = solution[i] - ((A.get_row(i)[j] / A.get_row(i)[i]) * x[j]);
+                            x[i] = solution[i];
+                        }
+                    }
+                    
+                    
+                }
+                print_solution(x, A.dim);
+                cout << endl << endl;
+                --n_iterations;
+            }
+            this->solution > solution;
+        } else {
+            cout << "This matrix is not in diagonally dominant form. Convergence is not guaranteed!" << endl;
+        }
     }
 };
 
 int main()
 {
-    Matrix A = Matrix(4);
-    vector<float> b = {1, 1, -2 ,1};
+    // vector<vector<float>> v ={{2, 1, -1}, {1, 4, 3}, {-1 ,2 ,7}};
+    // Matrix A = Matrix(v);
+    // vector<float> b = {0, 14, 30};
+
+    // vector<vector<float>> v ={{2, -1, 0}, {1, -3, 1}, {-1, 1 ,-3}};
+    // Matrix A = Matrix(v);
+    // vector<float> b = {2, -2, 6};
+
+    // vector<vector<float>> v ={{5, 6, 7}, {6, 3, 9}, {7, 9, 10}};
+    // Matrix A = Matrix(v);
+    // vector<float> b = {18, 18, 26};
+
+    // vector<vector<float>> v ={{-1,1,-1,1}, {1, 1, 1, 1}, {8, 4 ,2 ,1}, {27, 9, 3, 1}};
+    // Matrix A = Matrix(v);
+    // vector<float> b = {1, 1, -2, 1};
+
+    vector<vector<float>> v ={{10, 2, -1, 2}, {1, 5, 1, 0}, {1, -2 ,-5 ,1}, {3, 0, 0, 9}};
+    Matrix A = Matrix(v);
+    vector<float> b = {-4, 1, 2, 10};
+    
     Solve x = Solve(A, b);
+    cout << endl << endl;
+
+    SolveSeidle y = SolveSeidle(A, b, 30);
     return 0;
 }
