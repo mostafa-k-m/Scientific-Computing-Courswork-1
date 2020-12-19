@@ -374,7 +374,7 @@ public:
 int main()
 {
     Matrix A = Matrix(3);
-    vector<float> vec = {0, 14, 30};
-    Solve x = Solve(A, vec);
+    vector<float> b = {0, 14, 30};
+    Solve x = Solve(A, b);
     return 0;
 }
