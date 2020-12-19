@@ -10,6 +10,7 @@ public:
     int dim;
     vector<vector<float>> mat;
 
+    // constructor that takes input from the CLI
     // Matrix(int x)
     // {
     //     dim = x;
@@ -29,6 +30,7 @@ public:
     //     this->dim > dim;
     // }
 
+    // contructor that takes a vector of vectors of floats
     Matrix(vector<vector<float>> in_mat)
     {
         mat = in_mat;
@@ -36,6 +38,7 @@ public:
         this->mat > mat;
         this->dim > dim;
     }
+
 
     bool augment_matrix(vector<float> vec)
     {
