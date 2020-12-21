@@ -1,6 +1,6 @@
-#include "Coursework1/Matrix.h"
-#include "Coursework1/SolveGaussElimination.h"
-#include "Coursework1/SolveSeidle.h"
+#include "Coursework1/Matrix.hpp"
+#include "Coursework1/SolveGaussElimination.hpp"
+#include "Coursework1/SolveSeidle.hpp"
 
 using namespace std;
 
@@ -25,7 +25,11 @@ int main()
     // Matrix A = Matrix(v);
     // vector<float> b = {-4, 1, 2, 10};
 
-    vector<vector<float>> v ={{-1,1,-1,1}, {1, 1, 1, 1}, {8, 4 ,2 ,1}, {27, 9, 3, 1}};
+    vector<vector<float>> v ={
+        {-1,1,-1,1},
+        {1, 1, 1, 1},
+        {8, 4 ,2 ,1},
+        {27, 9, 3, 1}};
     Matrix A = Matrix(v);
     vector<float> b = {1, 1, -2, 1};
 

@@ -131,6 +131,24 @@ public:
         cout << ")" << endl;
     }
 
+    bool determinant_check(Matrix A)
+    {
+        float determinant_value;
+        for (int i = 0; i < A.dim; ++i)
+        {
+            determinant_value *= A.get_row(i)[i];
+        }
+
+        if (determinant_value != 0)
+        {
+            return (false);
+        }
+        else
+        {
+            return (true);
+        }
+    }
+
     SolveGaussElimination(Matrix A, vector<float> b, bool verbose)
     {
         bool singular_flag = A.flag_singular();
@@ -140,15 +158,17 @@ public:
         bool valid_solution = (singular_flag && ill_conditioned_flag && size_correct);
 
         if (valid_solution)
-        {   
+        {
             A = rearrange_rows(A, A.dim);
-            if (verbose) {
+            if (verbose)
+            {
                 cout << "Matrix Rearranged" << endl;
                 print_aug_matrix(A);
             }
 
             A.scale_matrix();
-            if (verbose) {
+            if (verbose)
+            {
                 cout << "Matrix Scaled" << endl;
                 print_aug_matrix(A);
             }
@@ -157,21 +177,30 @@ public:
 
             A.scale_matrix();
 
+            bool determinant_check_ = determinant_check(A);
+            valid_solution = valid_solution && determinant_check_;
 
-           
-            A.row_echelon_form();
+            if (valid_solution)
+            {
+                A.row_echelon_form();
 
-            if (verbose) {
-                cout << "Matrix in Row Echelon Form" << endl;
-                print_aug_matrix(A);
+                if (verbose)
+                {
+                    cout << "Matrix in Row Echelon Form" << endl;
+                    print_aug_matrix(A);
+                }
+
+                solution = get_solution(A);
+
+                if (verbose)
+                {
+                    cout << "The Solution is: " << endl;
+                    print_solution(solution, A.dim);
+                }
             }
-
-
-            solution = get_solution(A);
-
-                if (verbose) {
-                cout << "The Solution is: " << endl;
-                print_solution(solution, A.dim);
+            else
+            {
+                cout << "The determinant is equal to Zero!" << endl;
             }
         }
         else if (!size_correct)
