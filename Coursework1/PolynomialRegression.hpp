@@ -4,7 +4,6 @@
 #include <vector>
 #include <iostream>
 
-
 using namespace std;
 
 class PlynomialRegression
@@ -13,9 +12,12 @@ class PlynomialRegression
 public:
     vector<float> polynomial_coeffs;
     vector<float> dummy_vec;
-    vector< vector<float> > dummy_mat;
+    vector<vector<float>> dummy_mat;
+
     int m; // order of polynomial
     float n;
+
+    vector<float> solution;
 
     vector<float> row_algorithm_left(float x, int n_row)
     {
@@ -41,25 +43,27 @@ public:
 
     float row_algorithm_right(float x, float y, int n_row)
     {
-        if (n_row == 0) {
+        if (n_row == 0)
+        {
             return y;
-        } else {
+        }
+        else
+        {
             float x_ = x;
             for (int j = 1; j < n_row; j++)
             {
                 x_ *= x;
             }
-            return x_*y;
+            return x_ * y;
         }
-        
     }
 
-    vector<float> fit(vector<float> x, vector<float> y)
+    void fit(vector<float> x, vector<float> y)
     {
         n = x.size();
         vector<vector<float>> mat = dummy_mat;
         vector<float> b = dummy_vec;
-        
+
         for (int i = 0; i < n; i++)
         {
             float x_ = x[i];
@@ -84,12 +88,32 @@ public:
 
         SolveGaussElimination sol_g = SolveGaussElimination(A, b, true);
         SolveSeidle sol_s = SolveSeidle(A, b, 30);
-        return b; 
+
+        solution = sol_g.solution;
+
+        this->solution > solution;
     }
 
-    // vector<float> predict(vector<float> x) {
-
-    // }
+    vector<float> predict(float start, float end, float step)
+    {
+        vector<float> y;
+        
+        for (float i = start; i <= end; i += step)
+        {
+            float y_ = solution[0];
+            for (int j = 1; j < m; j++)
+            {
+                float y__ = i * solution[j];
+                for (int k = 1; k < j; k++)
+                {
+                    y__ *= i;
+                }
+                y_ += y__;
+            }
+            y.push_back(y_);
+        }
+        return(y);
+    }
 
     PlynomialRegression(int m_)
     {
@@ -102,7 +126,7 @@ public:
         {
             dummy_mat.push_back(dummy_vec);
         }
-        this-> m >> m;
+        this->m >> m;
         this->dummy_vec > dummy_vec;
         this->dummy_mat > dummy_mat;
     }
