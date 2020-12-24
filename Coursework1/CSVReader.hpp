@@ -18,10 +18,12 @@ public:
         int count = 1;
 
         for (int i = 0; i < s.size(); i++)
+        {
             if (s[i] == ',')
             {
                 count += 1;
             }
+        }
         return count;
     }
 

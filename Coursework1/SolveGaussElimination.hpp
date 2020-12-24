@@ -133,7 +133,7 @@ public:
 
     bool determinant_check(Matrix A)
     {
-        float determinant_value;
+        float determinant_value = 1;
         for (int i = 0; i < A.dim; ++i)
         {
             determinant_value *= A.get_row(i)[i];
