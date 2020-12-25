@@ -1,6 +1,3 @@
-#include "Matrix.hpp"
-#include "SolveGaussElimination.hpp"
-#include "SolveSeidle.hpp"
 #include <vector>
 #include <iostream>
 
