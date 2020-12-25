@@ -126,8 +126,8 @@ public:
         {
             dummy_mat.push_back(dummy_vec);
         }
-        this->m >> m;
-        this->dummy_vec > dummy_vec;
+        this->m > m;
         this->dummy_mat > dummy_mat;
+        this->dummy_vec > dummy_vec;
     }
 };
