@@ -10,3 +10,5 @@ dependencies:
   - notebook
   - numpy
   - matplotlib
+  - cmake
+  - python=3.7
