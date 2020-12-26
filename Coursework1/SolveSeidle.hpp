@@ -4,7 +4,6 @@ class SolveSeidle : public SolverBase
 {
 public:
     int n_iterations;
-    vector<float> solution;
 
     SolveSeidle(Matrix A, vector<float> b, int n, bool verbose=false)
     {

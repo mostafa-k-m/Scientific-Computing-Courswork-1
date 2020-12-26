@@ -3,7 +3,6 @@ using namespace std;
 class SolveGaussElimination : public SolverBase
 {
 public:
-    vector<float> solution;
 
     SolveGaussElimination(Matrix A, vector<float> b, bool verbose=false)
     {
