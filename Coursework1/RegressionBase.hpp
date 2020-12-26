@@ -4,25 +4,25 @@ class RegressionBase
 {
 
 public:
-    vector<float> polynomial_coeffs;
-    vector<float> dummy_vec;
-    vector<vector<float>> dummy_mat;
+    vector<double> polynomial_coeffs;
+    vector<double> dummy_vec;
+    vector<vector<double>> dummy_mat;
 
     int m; // order of polynomial
-    float n;
+    double n;
 
-    vector<float> solution;
+    vector<double> solution;
 
-    vector<float> predict(float start, float end, float step, bool verbose=false)
+    vector<double> predict(double start, double end, double step, bool verbose=false)
     {
-        vector<float> y;
+        vector<double> y;
         
-        for (float i = start; i <= end; i += step)
+        for (double i = start; i <= end; i += step)
         {
-            float y_ = solution[0];
+            double y_ = solution[0];
             for (int j = 1; j < m; j++)
             {
-                float y__ = i * solution[j];
+                double y__ = i * solution[j];
                 for (int k = 1; k < j; k++)
                 {
                     y__ *= i;

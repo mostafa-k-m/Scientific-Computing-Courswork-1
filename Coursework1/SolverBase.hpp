@@ -3,15 +3,15 @@ using namespace std;
 class SolverBase
 {
 public:
-    vector<float> solution;
+    vector<double> solution;
 
-    float get_abs_max_index(vector<float> vec, int dim, int row_ix)
+    double get_abs_max_index(vector<double> vec, int dim, int row_ix)
     {
-        float max = vec[row_ix];
+        double max = vec[row_ix];
 
         max = abs(vec[row_ix]);
 
-        float temp;
+        double temp;
         int max_ix = row_ix;
 
         for (int i = row_ix; i < dim; ++i)
@@ -29,7 +29,7 @@ public:
 
     Matrix find_pivot(Matrix A, int row_ix)
     {
-        vector<float> col = A.get_column(row_ix);
+        vector<double> col = A.get_column(row_ix);
         int ix_of_pivot = get_abs_max_index(col, A.dim, row_ix);
         if (ix_of_pivot != row_ix)
         {
@@ -43,14 +43,14 @@ public:
         for (int i = 0; i < dim - 1; ++i)
         {
             A = find_pivot(A, i);
-            vector<float> temp;
+            vector<double> temp;
         }
         return A;
     }
 
     void print_aug_matrix(Matrix A)
     {
-        vector<float> temp;
+        vector<double> temp;
         cout << setw(10) << " ";
         for (int i = 0; i < A.dim + 1; ++i)
         {
@@ -79,21 +79,21 @@ public:
         for (int ix = 0; ix < A.dim; ++ix)
         {
             ix_of_pivot = ix;
-            float pivot = A.get_row(ix_of_pivot)[ix_of_pivot];
+            double pivot = A.get_row(ix_of_pivot)[ix_of_pivot];
             for (int i = ix_of_pivot + 1; i < A.dim; ++i)
             {
-                float number_to_remove = A.get_row(i)[ix_of_pivot];
-                float coeff = -1 * number_to_remove / pivot;
+                double number_to_remove = A.get_row(i)[ix_of_pivot];
+                double coeff = -1 * number_to_remove / pivot;
                 A.matrix_row_operation(coeff, ix_of_pivot, i);
             }
         }
         return A;
     }
 
-    vector<float> get_solution(Matrix A)
+    vector<double> get_solution(Matrix A)
     {
-        vector<float> temp_vec;
-        float temp;
+        vector<double> temp_vec;
+        double temp;
         temp_vec.push_back(A.get_row(A.dim - 1)[A.dim]);
         for (int i = A.dim - 2; i >= 0; --i)
         {
@@ -105,7 +105,7 @@ public:
             temp_vec.push_back(temp);
         }
 
-        vector<float> solution;
+        vector<double> solution;
         for (int i = A.dim - 1; i >= 0; --i)
         {
             solution.push_back(temp_vec[i]);
@@ -114,7 +114,7 @@ public:
         return solution;
     }
 
-    void print_solution(vector<float> solution, int dim)
+    void print_solution(vector<double> solution, int dim)
     {
         cout << "(";
         for (int i = 0; i < dim; ++i)
@@ -133,7 +133,7 @@ public:
 
     bool determinant_check(Matrix A)
     {
-        float determinant_value = 1;
+        double determinant_value = 1;
         for (int i = 0; i < A.dim; ++i)
         {
             determinant_value *= A.get_row(i)[i];

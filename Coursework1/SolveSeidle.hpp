@@ -5,9 +5,9 @@ class SolveSeidle : public SolverBase
 public:
     int n_iterations;
 
-    SolveSeidle(Matrix A, vector<float> b, int n, bool verbose=false)
+    SolveSeidle(Matrix A, vector<double> b, int n, bool verbose=false)
     {
-        vector<float> x;
+        vector<double> x;
 
         A = rearrange_rows(A, A.dim);
 

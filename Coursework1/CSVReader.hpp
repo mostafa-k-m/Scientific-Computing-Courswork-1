@@ -3,7 +3,7 @@ using namespace std;
 class CSVReader
 {
 public:
-    vector<vector<float>> data;
+    vector<vector<double>> data;
     int n_cols;
     vector<string> col_names;
 
@@ -48,7 +48,7 @@ public:
                 col_names = splitcomma(line);
                 for (int i = 0; i < n_cols; i++)
                 {
-                    vector<float> row;
+                    vector<double> row;
                     data.push_back(row);
                 }
                 count++;

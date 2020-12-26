@@ -4,7 +4,7 @@ class SolveGaussElimination : public SolverBase
 {
 public:
 
-    SolveGaussElimination(Matrix A, vector<float> b, bool verbose=false)
+    SolveGaussElimination(Matrix A, vector<double> b, bool verbose=false)
     {
         bool singular_flag = A.flag_singular();
         bool ill_conditioned_flag = A.flag_ill_conditioned();

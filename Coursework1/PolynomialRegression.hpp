@@ -5,9 +5,9 @@ class PlynomialRegression : public RegressionBase
 
 public:
 
-    vector<float> row_algorithm_left(float x, int n_row)
+    vector<double> row_algorithm_left(double x, int n_row)
     {
-        vector<float> vec;
+        vector<double> vec;
         for (int i = 0; i < m; i++)
         {
             if ((i == 0) && (n_row == 0))
@@ -16,7 +16,7 @@ public:
             }
             else
             {
-                float x_ = x;
+                double x_ = x;
                 for (int j = 1; j < n_row + i; j++)
                 {
                     x_ *= x;
@@ -27,7 +27,7 @@ public:
         return (vec);
     }
 
-    float row_algorithm_right(float x, float y, int n_row)
+    double row_algorithm_right(double x, double y, int n_row)
     {
         if (n_row == 0)
         {
@@ -35,7 +35,7 @@ public:
         }
         else
         {
-            float x_ = x;
+            double x_ = x;
             for (int j = 1; j < n_row; j++)
             {
                 x_ *= x;
@@ -44,19 +44,19 @@ public:
         }
     }
 
-    void fit(vector<float> x, vector<float> y, int solver, bool verbose=false)
+    void fit(vector<double> x, vector<double> y, int solver, bool verbose=false)
     {
         n = x.size();
-        vector<vector<float>> mat = dummy_mat;
-        vector<float> b = dummy_vec;
+        vector<vector<double>> mat = dummy_mat;
+        vector<double> b = dummy_vec;
 
         for (int i = 0; i < n; i++)
         {
-            float x_ = x[i];
-            vector<float> row;
+            double x_ = x[i];
+            vector<double> row;
 
-            float y_ = y[i];
-            float b_;
+            double y_ = y[i];
+            double b_;
             for (int j = 0; j < m; j++)
             {
                 row = row_algorithm_left(x_, j);
