@@ -1,67 +1,62 @@
 using namespace std;
 
-class SolveSeidle
+class SolveSeidle : public SolverBase
 {
 public:
     int n_iterations;
     vector<float> solution;
 
-    void print_solution(vector<float> solution, int dim)
-    {
-        cout << "(";
-        for (int i = 0; i < dim; ++i)
-        {
-            if (i == dim - 1)
-            {
-                cout << solution[i];
-            }
-            else
-            {
-                cout << solution[i] << ", ";
-            }
-        }
-        cout << ")" << endl;
-    }
-
-    SolveSeidle(Matrix A, vector<float> b, int n)
+    SolveSeidle(Matrix A, vector<float> b, int n, bool verbose=false)
     {
         vector<float> x;
 
+        A = rearrange_rows(A, A.dim);
+
         bool valid_solution = A.flag_diagonally_dominant();
 
-        if (valid_solution)
-        {
-            n_iterations = n;
-            for (int i = 0; i < A.dim; i++)
-            {
-                x.push_back(0);
-                solution.push_back(0);
-            }
-            while (n_iterations > 0)
-            {
-                cout << "iteration " << (n - n_iterations + 1) << ": " << endl;
-                for (int i = 0; i < A.dim; i++)
-                {
-                    solution[i] = (b[i] / A.get_row(i)[i]);
-                    for (int j = 0; j < A.dim; j++)
-                    {
-                        if (j != i)
-                        {
-                            solution[i] = solution[i] - ((A.get_row(i)[j] / A.get_row(i)[i]) * x[j]);
-                            x[i] = solution[i];
-                        }
-                    }
-                }
-                print_solution(x, A.dim);
-                cout << endl
-                     << endl;
-                --n_iterations;
-            }
-            this->solution > solution;
-        }
-        else
+        if (!valid_solution)
         {
             cout << "This matrix is not in diagonally dominant form. Convergence is not guaranteed!" << endl;
         }
+
+        n_iterations = n;
+
+        for (int i = 0; i < A.dim; i++)
+        {
+            x.push_back(0);
+            solution.push_back(0);
+        }
+
+        while (n_iterations > 0)
+        {
+            for (int i = 0; i < A.dim; i++)
+            {
+                solution[i] = (b[i] / A.get_row(i)[i]);
+                for (int j = 0; j < A.dim; j++)
+                {
+                    if (j != i)
+                    {
+                        solution[i] = solution[i] - ((A.get_row(i)[j] / A.get_row(i)[i]) * x[j]);
+                        x[i] = solution[i];
+                    }
+                }
+            }
+            if (verbose)
+            {
+                cout << "iteration " << (n - n_iterations + 1) << ": " << endl;
+                print_solution(x, A.dim);
+                cout << endl
+                     << endl;
+            }
+            else if (n_iterations % 5 == 0)
+            {
+                cout << "iteration " << (n - n_iterations + 1) << ": " << endl;
+                print_solution(x, A.dim);
+                cout << endl
+                     << endl;
+            }
+            --n_iterations;
+        }
+        this->solution > solution;
     }
 };

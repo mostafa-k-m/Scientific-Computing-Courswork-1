@@ -55,7 +55,7 @@ public:
         }
     }
 
-    void fit(vector<float> x, vector<float> y)
+    void fit(vector<float> x, vector<float> y, int solver, bool verbose=false)
     {
         n = x.size();
         vector<vector<float>> mat = dummy_mat;
@@ -82,16 +82,26 @@ public:
         }
         mat[0][0] = n;
         Matrix A = Matrix(mat);
-
-        SolveGaussElimination sol_g = SolveGaussElimination(A, b, true);
-        SolveSeidle sol_s = SolveSeidle(A, b, 30);
-
-        solution = sol_g.solution;
-
+        if (solver == 1) 
+        {
+            SolveGaussElimination sol = SolveGaussElimination(A, b, verbose);
+            solution = sol.solution;
+        } else if (solver == 2)
+        {
+            int it;
+            cout << "Please Specify the number of iterations" << endl;
+            cin >> it;
+            SolveSeidle sol = SolveSeidle(A, b, it, verbose);
+            solution = sol.solution;
+        } else {
+            cout << "Invalid choice for a solver (1 for Gauss Elimination, 2 for Gauss Seidle) Gauss Elimination chosen by default" << endl;
+            SolveGaussElimination sol = SolveGaussElimination(A, b, verbose);
+            solution = sol.solution;
+        }
         this->solution > solution;
     }
 
-    vector<float> predict(float start, float end, float step)
+    vector<float> predict(float start, float end, float step, bool verbose=false)
     {
         vector<float> y;
         
@@ -108,6 +118,15 @@ public:
                 y_ += y__;
             }
             y.push_back(y_);
+        }
+        if (verbose)
+        {
+            cout << "( ";
+            for (int k = 0; k < 100; k++)
+            {
+                cout << y[k] << ", ";
+            }
+            cout << ")" << endl;
         }
         return(y);
     }
