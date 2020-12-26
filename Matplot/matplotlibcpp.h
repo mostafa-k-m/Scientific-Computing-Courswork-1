@@ -2,7 +2,7 @@
 
 // Python headers must be included before any system headers, since
 // they define _POSIX_C_SOURCE
-#include </srv/conda/envs/notebook/include/python3.7m/Python.h>
+#include <Python.h>
 
 #include <vector>
 #include <map>
@@ -298,8 +298,8 @@ inline bool annotate(std::string annotation, double x, double y)
     PyObject * xy = PyTuple_New(2);
     PyObject * str = PyString_FromString(annotation.c_str());
 
-    PyTuple_SetItem(xy,0,Pydouble_FromDouble(x));
-    PyTuple_SetItem(xy,1,Pydouble_FromDouble(y));
+    PyTuple_SetItem(xy,0,PyFloat_FromDouble(x));
+    PyTuple_SetItem(xy,1,PyFloat_FromDouble(y));
 
     PyObject* kwargs = PyDict_New();
     PyDict_SetItemString(kwargs, "xy", xy);
@@ -323,7 +323,7 @@ namespace detail {
 // Type selector for numpy array conversion
 template <typename T> struct select_npy_type { const static NPY_TYPES type = NPY_NOTYPE; }; //Default
 template <> struct select_npy_type<double> { const static NPY_TYPES type = NPY_DOUBLE; };
-template <> struct select_npy_type<double> { const static NPY_TYPES type = NPY_double; };
+template <> struct select_npy_type<float> { const static NPY_TYPES type = NPY_FLOAT; };
 template <> struct select_npy_type<bool> { const static NPY_TYPES type = NPY_BOOL; };
 template <> struct select_npy_type<int8_t> { const static NPY_TYPES type = NPY_INT8; };
 template <> struct select_npy_type<int16_t> { const static NPY_TYPES type = NPY_SHORT; };
@@ -392,7 +392,7 @@ PyObject* get_array(const std::vector<Numeric>& v)
 {
     PyObject* list = PyList_New(v.size());
     for(size_t i = 0; i < v.size(); ++i) {
-        PyList_SetItem(list, i, Pydouble_FromDouble(v.at(i)));
+        PyList_SetItem(list, i, PyFloat_FromDouble(v.at(i)));
     }
     return list;
 }
@@ -744,16 +744,16 @@ bool fill_between(const std::vector<Numeric>& x, const std::vector<Numeric>& y1,
 template <typename Numeric>
 bool arrow(Numeric x, Numeric y, Numeric end_x, Numeric end_y, const std::string& fc = "r",
            const std::string ec = "k", Numeric head_length = 0.25, Numeric head_width = 0.1625) {
-    PyObject* obj_x = Pydouble_FromDouble(x);
-    PyObject* obj_y = Pydouble_FromDouble(y);
-    PyObject* obj_end_x = Pydouble_FromDouble(end_x);
-    PyObject* obj_end_y = Pydouble_FromDouble(end_y);
+    PyObject* obj_x = PyFloat_FromDouble(x);
+    PyObject* obj_y = PyFloat_FromDouble(y);
+    PyObject* obj_end_x = PyFloat_FromDouble(end_x);
+    PyObject* obj_end_y = PyFloat_FromDouble(end_y);
 
     PyObject* kwargs = PyDict_New();
     PyDict_SetItemString(kwargs, "fc", PyString_FromString(fc.c_str()));
     PyDict_SetItemString(kwargs, "ec", PyString_FromString(ec.c_str()));
-    PyDict_SetItemString(kwargs, "head_width", Pydouble_FromDouble(head_width));
-    PyDict_SetItemString(kwargs, "head_length", Pydouble_FromDouble(head_length));
+    PyDict_SetItemString(kwargs, "head_width", PyFloat_FromDouble(head_width));
+    PyDict_SetItemString(kwargs, "head_length", PyFloat_FromDouble(head_length));
 
     PyObject* plot_args = PyTuple_New(4);
     PyTuple_SetItem(plot_args, 0, obj_x);
@@ -783,7 +783,7 @@ bool hist(const std::vector<Numeric>& y, long bins=10,std::string color="b",
     PyObject* kwargs = PyDict_New();
     PyDict_SetItemString(kwargs, "bins", PyLong_FromLong(bins));
     PyDict_SetItemString(kwargs, "color", PyString_FromString(color.c_str()));
-    PyDict_SetItemString(kwargs, "alpha", Pydouble_FromDouble(alpha));
+    PyDict_SetItemString(kwargs, "alpha", PyFloat_FromDouble(alpha));
     PyDict_SetItemString(kwargs, "cumulative", cumulative ? Py_True : Py_False);
 
     PyObject* plot_args = PyTuple_New(1);
@@ -806,7 +806,7 @@ namespace detail {
 
 inline void imshow(void *ptr, const NPY_TYPES type, const int rows, const int columns, const int colors, const std::map<std::string, std::string> &keywords, PyObject** out)
 {
-    assert(type == NPY_UINT8 || type == NPY_double);
+    assert(type == NPY_UINT8 || type == NPY_FLOAT);
     assert(colors == 1 || colors == 3 || colors == 4);
 
     detail::_interpreter::get();
@@ -841,9 +841,9 @@ inline void imshow(const unsigned char *ptr, const int rows, const int columns, 
     detail::imshow((void *) ptr, NPY_UINT8, rows, columns, colors, keywords, out);
 }
 
-inline void imshow(const double *ptr, const int rows, const int columns, const int colors, const std::map<std::string, std::string> &keywords = {}, PyObject** out = nullptr)
+inline void imshow(const float *ptr, const int rows, const int columns, const int colors, const std::map<std::string, std::string> &keywords = {}, PyObject** out = nullptr)
 {
-    detail::imshow((void *) ptr, NPY_double, rows, columns, colors, keywords, out);
+    detail::imshow((void *) ptr, NPY_FLOAT, rows, columns, colors, keywords, out);
 }
 
 #ifdef WITH_OPENCV
@@ -858,7 +858,7 @@ void imshow(const cv::Mat &image, const std::map<std::string, std::string> &keyw
         break;
     case CV_32F:
         image2 = image;
-        npy_type = NPY_double;
+        npy_type = NPY_FLOAT;
         break;
     default:
         image.convertTo(image2, CV_MAKETYPE(CV_8U, image.channels()));
@@ -988,7 +988,7 @@ bool bar(const std::vector<Numeric> &               x,
 
   PyDict_SetItemString(kwargs, "ec", PyString_FromString(ec.c_str()));
   PyDict_SetItemString(kwargs, "ls", PyString_FromString(ls.c_str()));
-  PyDict_SetItemString(kwargs, "lw", Pydouble_FromDouble(lw));
+  PyDict_SetItemString(kwargs, "lw", PyFloat_FromDouble(lw));
 
   for (std::map<std::string, std::string>::const_iterator it =
          keywords.begin();
@@ -1039,7 +1039,7 @@ bool barh(const std::vector<Numeric> &x, const std::vector<Numeric> &y, std::str
 
     PyDict_SetItemString(kwargs, "ec", PyString_FromString(ec.c_str()));
     PyDict_SetItemString(kwargs, "ls", PyString_FromString(ls.c_str()));
-    PyDict_SetItemString(kwargs, "lw", Pydouble_FromDouble(lw));
+    PyDict_SetItemString(kwargs, "lw", PyFloat_FromDouble(lw));
 
     for (std::map<std::string, std::string>::const_iterator it = keywords.begin(); it != keywords.end(); ++it) {
         PyDict_SetItemString(kwargs, it->first.c_str(), PyUnicode_FromString(it->second.c_str()));
@@ -1067,7 +1067,7 @@ inline bool subplots_adjust(const std::map<std::string, double>& keywords = {})
     for (std::map<std::string, double>::const_iterator it =
             keywords.begin(); it != keywords.end(); ++it) {
         PyDict_SetItemString(kwargs, it->first.c_str(),
-                             Pydouble_FromDouble(it->second));
+                             PyFloat_FromDouble(it->second));
     }
 
 
@@ -1093,7 +1093,7 @@ bool named_hist(std::string label,const std::vector<Numeric>& y, long bins=10, s
     PyDict_SetItemString(kwargs, "label", PyString_FromString(label.c_str()));
     PyDict_SetItemString(kwargs, "bins", PyLong_FromLong(bins));
     PyDict_SetItemString(kwargs, "color", PyString_FromString(color.c_str()));
-    PyDict_SetItemString(kwargs, "alpha", Pydouble_FromDouble(alpha));
+    PyDict_SetItemString(kwargs, "alpha", PyFloat_FromDouble(alpha));
 
 
     PyObject* plot_args = PyTuple_New(1);
@@ -1504,8 +1504,8 @@ void text(Numeric x, Numeric y, const std::string& s = "")
     detail::_interpreter::get();
 
     PyObject* args = PyTuple_New(3);
-    PyTuple_SetItem(args, 0, Pydouble_FromDouble(x));
-    PyTuple_SetItem(args, 1, Pydouble_FromDouble(y));
+    PyTuple_SetItem(args, 0, PyFloat_FromDouble(x));
+    PyTuple_SetItem(args, 1, PyFloat_FromDouble(y));
     PyTuple_SetItem(args, 2, PyString_FromString(s.c_str()));
 
     PyObject* res = PyObject_CallObject(detail::_interpreter::get().s_python_function_text, args);
@@ -1515,7 +1515,7 @@ void text(Numeric x, Numeric y, const std::string& s = "")
     Py_DECREF(res);
 }
 
-inline void colorbar(PyObject* mappable = NULL, const std::map<std::string, double>& keywords = {})
+inline void colorbar(PyObject* mappable = NULL, const std::map<std::string, float>& keywords = {})
 {
     if (mappable == NULL)
         throw std::runtime_error("Must call colorbar with PyObject* returned from an image, contour, surface, etc.");
@@ -1526,9 +1526,9 @@ inline void colorbar(PyObject* mappable = NULL, const std::map<std::string, doub
     PyTuple_SetItem(args, 0, mappable);
 
     PyObject* kwargs = PyDict_New();
-    for(std::map<std::string, double>::const_iterator it = keywords.begin(); it != keywords.end(); ++it)
+    for(std::map<std::string, float>::const_iterator it = keywords.begin(); it != keywords.end(); ++it)
     {
-        PyDict_SetItemString(kwargs, it->first.c_str(), Pydouble_FromDouble(it->second));
+        PyDict_SetItemString(kwargs, it->first.c_str(), PyFloat_FromDouble(it->second));
     }
 
     PyObject* res = PyObject_Call(detail::_interpreter::get().s_python_function_colorbar, args, kwargs);
@@ -1593,8 +1593,8 @@ inline void figure_size(size_t w, size_t h)
 
     const size_t dpi = 100;
     PyObject* size = PyTuple_New(2);
-    PyTuple_SetItem(size, 0, Pydouble_FromDouble((double)w / dpi));
-    PyTuple_SetItem(size, 1, Pydouble_FromDouble((double)h / dpi));
+    PyTuple_SetItem(size, 0, PyFloat_FromDouble((double)w / dpi));
+    PyTuple_SetItem(size, 1, PyFloat_FromDouble((double)h / dpi));
 
     PyObject* kwargs = PyDict_New();
     PyDict_SetItemString(kwargs, "figsize", size);
@@ -1643,8 +1643,8 @@ void ylim(Numeric left, Numeric right)
     detail::_interpreter::get();
 
     PyObject* list = PyList_New(2);
-    PyList_SetItem(list, 0, Pydouble_FromDouble(left));
-    PyList_SetItem(list, 1, Pydouble_FromDouble(right));
+    PyList_SetItem(list, 0, PyFloat_FromDouble(left));
+    PyList_SetItem(list, 1, PyFloat_FromDouble(right));
 
     PyObject* args = PyTuple_New(1);
     PyTuple_SetItem(args, 0, list);
@@ -1662,8 +1662,8 @@ void xlim(Numeric left, Numeric right)
     detail::_interpreter::get();
 
     PyObject* list = PyList_New(2);
-    PyList_SetItem(list, 0, Pydouble_FromDouble(left));
-    PyList_SetItem(list, 1, Pydouble_FromDouble(right));
+    PyList_SetItem(list, 0, PyFloat_FromDouble(left));
+    PyList_SetItem(list, 1, PyFloat_FromDouble(right));
 
     PyObject* args = PyTuple_New(1);
     PyTuple_SetItem(args, 0, list);
@@ -1686,8 +1686,8 @@ inline double* xlim()
     PyObject* right = PyTuple_GetItem(res,1);
 
     double* arr = new double[2];
-    arr[0] = Pydouble_AsDouble(left);
-    arr[1] = Pydouble_AsDouble(right);
+    arr[0] = PyFloat_AsDouble(left);
+    arr[1] = PyFloat_AsDouble(right);
 
     if(!res) throw std::runtime_error("Call to xlim() failed.");
 
@@ -1706,8 +1706,8 @@ inline double* ylim()
     PyObject* right = PyTuple_GetItem(res,1);
 
     double* arr = new double[2];
-    arr[0] = Pydouble_AsDouble(left);
-    arr[1] = Pydouble_AsDouble(right);
+    arr[0] = PyFloat_AsDouble(left);
+    arr[1] = PyFloat_AsDouble(right);
 
     if(!res) throw std::runtime_error("Call to ylim() failed.");
 
@@ -1817,7 +1817,7 @@ template <typename Numeric> inline void margins(Numeric margin)
 {
     // construct positional args
     PyObject* args = PyTuple_New(1);
-    PyTuple_SetItem(args, 0, Pydouble_FromDouble(margin));
+    PyTuple_SetItem(args, 0, PyFloat_FromDouble(margin));
 
     PyObject* res =
             PyObject_CallObject(detail::_interpreter::get().s_python_function_margins, args);
@@ -1832,8 +1832,8 @@ template <typename Numeric> inline void margins(Numeric margin_x, Numeric margin
 {
     // construct positional args
     PyObject* args = PyTuple_New(2);
-    PyTuple_SetItem(args, 0, Pydouble_FromDouble(margin_x));
-    PyTuple_SetItem(args, 1, Pydouble_FromDouble(margin_y));
+    PyTuple_SetItem(args, 0, PyFloat_FromDouble(margin_x));
+    PyTuple_SetItem(args, 1, PyFloat_FromDouble(margin_y));
 
     PyObject* res =
             PyObject_CallObject(detail::_interpreter::get().s_python_function_margins, args);
@@ -1877,9 +1877,9 @@ inline void subplot(long nrows, long ncols, long plot_number)
     
     // construct positional args
     PyObject* args = PyTuple_New(3);
-    PyTuple_SetItem(args, 0, Pydouble_FromDouble(nrows));
-    PyTuple_SetItem(args, 1, Pydouble_FromDouble(ncols));
-    PyTuple_SetItem(args, 2, Pydouble_FromDouble(plot_number));
+    PyTuple_SetItem(args, 0, PyFloat_FromDouble(nrows));
+    PyTuple_SetItem(args, 1, PyFloat_FromDouble(ncols));
+    PyTuple_SetItem(args, 2, PyFloat_FromDouble(plot_number));
 
     PyObject* res = PyObject_CallObject(detail::_interpreter::get().s_python_function_subplot, args);
     if(!res) throw std::runtime_error("Call to subplot() failed.");
@@ -1978,9 +1978,9 @@ inline void axvline(double x, double ymin = 0., double ymax = 1., const std::map
 
     // construct positional args
     PyObject* args = PyTuple_New(3);
-    PyTuple_SetItem(args, 0, Pydouble_FromDouble(x));
-    PyTuple_SetItem(args, 1, Pydouble_FromDouble(ymin));
-    PyTuple_SetItem(args, 2, Pydouble_FromDouble(ymax));
+    PyTuple_SetItem(args, 0, PyFloat_FromDouble(x));
+    PyTuple_SetItem(args, 1, PyFloat_FromDouble(ymin));
+    PyTuple_SetItem(args, 2, PyFloat_FromDouble(ymax));
 
     // construct keyword args
     PyObject* kwargs = PyDict_New();
@@ -2001,17 +2001,17 @@ inline void axvspan(double xmin, double xmax, double ymin = 0., double ymax = 1.
 {
     // construct positional args
     PyObject* args = PyTuple_New(4);
-    PyTuple_SetItem(args, 0, Pydouble_FromDouble(xmin));
-    PyTuple_SetItem(args, 1, Pydouble_FromDouble(xmax));
-    PyTuple_SetItem(args, 2, Pydouble_FromDouble(ymin));
-    PyTuple_SetItem(args, 3, Pydouble_FromDouble(ymax));
+    PyTuple_SetItem(args, 0, PyFloat_FromDouble(xmin));
+    PyTuple_SetItem(args, 1, PyFloat_FromDouble(xmax));
+    PyTuple_SetItem(args, 2, PyFloat_FromDouble(ymin));
+    PyTuple_SetItem(args, 3, PyFloat_FromDouble(ymax));
 
     // construct keyword args
     PyObject* kwargs = PyDict_New();
     for(std::map<std::string, std::string>::const_iterator it = keywords.begin(); it != keywords.end(); ++it)
     {
     if (it->first == "linewidth" || it->first == "alpha")
-            PyDict_SetItemString(kwargs, it->first.c_str(), Pydouble_FromDouble(std::stod(it->second)));
+            PyDict_SetItemString(kwargs, it->first.c_str(), PyFloat_FromDouble(std::stod(it->second)));
     else
             PyDict_SetItemString(kwargs, it->first.c_str(), PyString_FromString(it->second.c_str()));
     }
@@ -2208,7 +2208,7 @@ inline void pause(Numeric interval)
     detail::_interpreter::get();
 
     PyObject* args = PyTuple_New(1);
-    PyTuple_SetItem(args, 0, Pydouble_FromDouble(interval));
+    PyTuple_SetItem(args, 0, PyFloat_FromDouble(interval));
 
     PyObject* res = PyObject_CallObject(detail::_interpreter::get().s_python_function_pause, args);
     if(!res) throw std::runtime_error("Call to pause() failed.");
@@ -2296,8 +2296,8 @@ inline std::vector<std::array<double, 2>> ginput(const int numClicks = 1, const 
     for (size_t i = 0; i < len; i++) {
         PyObject *current = PyList_GetItem(res, i);
         std::array<double, 2> position;
-        position[0] = Pydouble_AsDouble(PyTuple_GetItem(current, 0));
-        position[1] = Pydouble_AsDouble(PyTuple_GetItem(current, 1));
+        position[0] = PyFloat_AsDouble(PyTuple_GetItem(current, 0));
+        position[1] = PyFloat_AsDouble(PyTuple_GetItem(current, 1));
         out.push_back(position);
     }
     Py_DECREF(res);
@@ -2387,8 +2387,8 @@ struct plot_impl<std::false_type>
 
         auto itx = begin(x), ity = begin(y);
         for(size_t i = 0; i < xs; ++i) {
-            PyList_SetItem(xlist, i, Pydouble_FromDouble(*itx++));
-            PyList_SetItem(ylist, i, Pydouble_FromDouble(*ity++));
+            PyList_SetItem(xlist, i, PyFloat_FromDouble(*itx++));
+            PyList_SetItem(ylist, i, PyFloat_FromDouble(*ity++));
         }
 
         PyObject* plot_args = PyTuple_New(3);
