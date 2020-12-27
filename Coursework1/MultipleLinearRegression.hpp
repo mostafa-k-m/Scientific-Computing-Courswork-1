@@ -21,7 +21,7 @@ public:
         return(summation);
     }
 
-    double fit(vector<double> x1, vector<double> x2, vector<double> y, int solver, bool verbose=false)
+    void fit(vector<double> x1, vector<double> x2, vector<double> y, int solver, bool verbose=false)
     {
         vector<vector<double>> mat = dummy_mat;
         vector<double> b = dummy_vec;
