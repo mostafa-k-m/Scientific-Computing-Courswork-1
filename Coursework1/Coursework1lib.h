@@ -12,4 +12,4 @@
 #include "CSVReader.hpp"
 #include "RegressionBase.hpp"
 #include "PolynomialRegression.hpp"
-#include "MultipleLinearRegresion.hpp"
+#include "MultipleLinearRegression.hpp"

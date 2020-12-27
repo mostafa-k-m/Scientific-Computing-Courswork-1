@@ -12,6 +12,7 @@
 #include <sstream>
 #include <cstdio>
 #include <cstdlib>
+#include <algorithm> 
 #include "Coursework1/NewtonInterpolator.hpp"
 #include "Coursework1/CubicSpline.hpp"
 #include <random>
