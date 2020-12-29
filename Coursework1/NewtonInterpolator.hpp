@@ -79,8 +79,8 @@ double NewtonInterpolator::interpolate(const vector<double> &a, double xval)
 
 vector<vector<double>> getPointsNewton(const vector<double> &x, vector<double> f, int n, NewtonInterpolator Newton, vector<double> coeff)
 {
-    double lower_bound = *min_element(x.begin(), x.end());
-    double upper_bound = *max_element(x.begin(), x.end());
+    double lower_bound = get_min_element(x);
+    double upper_bound = get_max_element(x);
     
     vector<double> newX = x;
     vector<double> newY = f;

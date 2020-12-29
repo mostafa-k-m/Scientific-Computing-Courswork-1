@@ -346,8 +346,8 @@ double Spline::deriv(int order, double x) const
 
 vector<vector<double>> getPointsSpline(const vector<double> &x, vector<double> f, int n, Spline cs)
 {
-    double lower_bound = *min_element(x.begin(), x.end());
-    double upper_bound = *max_element(x.begin(), x.end());
+    double lower_bound = get_min_element(x);
+    double upper_bound = get_max_element(x);
     
     vector<double> newX = x;
     vector<double> newY = f;

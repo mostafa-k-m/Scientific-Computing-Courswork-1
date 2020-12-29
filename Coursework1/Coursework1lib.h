@@ -7,6 +7,42 @@
 #include <random>
 #include <assert.h>
 
+
+
+double get_max_element(std::vector<double> vec)
+{
+    double max;
+    double temp;
+    max = vec[0];
+    for (int i = 0; i < vec.size(); ++i)
+    {
+        temp = abs(vec[i]);
+
+        if (temp > max)
+        {
+            max = temp;
+        }
+    }
+    return(max);
+}
+
+double get_min_element(std::vector<double> vec)
+{
+    double min;
+    double temp;
+    min = vec[0];
+    for (int i = 0; i < vec.size(); ++i)
+    {
+        temp = abs(vec[i]);
+
+        if (temp < min)
+        {
+            min = temp;
+        }
+    }
+    return(min);
+}
+
 #include "Matrix.hpp"
 #include "SolverBase.hpp"
 #include "SolveGaussElimination.hpp"
