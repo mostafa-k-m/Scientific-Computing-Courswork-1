@@ -8,12 +8,13 @@ std::vector<vector<double>> get_vertical_line(double x, double y, std::vector<do
     for (int i = 0; i < x_scatter.size(); ++i)
     {
         if (x == x_scatter[i]) {
-            std::vector<double>  = {x, x};
+            std::vector<double> x_out = {x, x};
             std::vector<double> y_out = {y, y_scatter[i]};
-            vec_out = {x_out, y_out}
-            return(vec_out);
+            vec_out = {x_out, y_out};
+            break;
         }   
     }
+    return(vec_out);
 }
 
 class PlotLineScatter
@@ -32,8 +33,9 @@ public:
         plt::scatter(x_scatter, y_scatter, 10,{{"color", "red"}});
         for (int i = 0; i < x.size(); ++i)
         {
-            vector<vector<double>> line = get_vertical_line(x, y, x_scatter, y_scatter);
+            vector<vector<double>> line = get_vertical_line(x[i], y[i], x_scatter, y_scatter);
             plt::plot(line[0], line[1], "--r");
+            break;
         }
         plt::legend();
         plt::save("./" + filename);
