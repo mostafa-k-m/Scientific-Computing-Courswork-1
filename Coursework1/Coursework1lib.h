@@ -14,7 +14,7 @@ double get_max_element(std::vector<double> vec)
     max = vec[0];
     for (int i = 0; i < vec.size(); ++i)
     {
-        temp = abs(vec[i]);
+        temp = vec[i];
 
         if (temp > max)
         {
@@ -31,7 +31,7 @@ double get_min_element(std::vector<double> vec)
     min = vec[0];
     for (int i = 0; i < vec.size(); ++i)
     {
-        temp = abs(vec[i]);
+        temp = vec[i];
 
         if (temp < min)
         {
