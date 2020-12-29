@@ -9,7 +9,7 @@ std::vector<vector<double>> get_vertical_line(double x, double y, std::vector<do
     {
         if (x == x_scatter[i]) {
             std::vector<double>  = {x, x};
-            std::vector<double> y_out = {y, x_scatter[i]};
+            std::vector<double> y_out = {y, y_scatter[i]};
             vec_out = {x_out, y_out}
             return(vec_out);
         }   
