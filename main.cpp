@@ -5,121 +5,18 @@
 //  Created by Wael Aboulezz on 23/12/2020.
 //
 
-#include <iostream>
-#include <vector>
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <cstdio>
-#include <cstdlib>
-#include <algorithm> 
-#include "Coursework1/NewtonInterpolator.hpp"
-#include "Coursework1/CubicSpline.hpp"
-#include <random>
+#include "Coursework1/Coursework1lib.h"
+
 
 using namespace std;
 
-void write_csv(std::string filename, std::vector<string> colnames, std::vector<vector<double>> vals){
-
-    ofstream outputFile;
-    outputFile.open(filename);
-    for (int i = 0; i < colnames.size(); i++) {
-        outputFile << colnames[i] << ",";
-        for(int j = 0; j < vals[i].size(); j++)
-        {
-            outputFile << vals[i].at(j) << ",";
-        }
-        outputFile << std::endl;
-    }
-    outputFile.close();
-
-}
-
-std::vector<std::pair<std::string, std::vector<double>>> read_csv(std::string filename){
-    std::vector<std::pair<std::string, std::vector<double>>> result;
-    std::ifstream myFile(filename);
-    if(!myFile.is_open()) throw std::runtime_error("Could not open file");
-    std::string line, colname;
-    double val;
-    if(myFile.good())
-    {
-        std::getline(myFile, line);
-        std::stringstream ss(line);
-        while(std::getline(ss, colname, ',')){
-            result.push_back({colname, std::vector<double> {}});
-        }
-    }
-    while(std::getline(myFile, line))
-    {
-        std::stringstream ss(line);
-        int colIdx = 0;
-        while(ss >> val){
-            result.at(colIdx).second.push_back(val);
-            if(ss.peek() == ',') ss.ignore();
-            colIdx++;
-        }
-    }
-    myFile.close();
-    return result;
-}
-std::vector<vector<double>> getPointsNewton(const vector<double> &x, vector<double> f, int n, NewtonInterpolator Newton, vector<double> coeff)
-{
-    double lower_bound = *min_element(x.begin(), x.end());
-    double upper_bound = *max_element(x.begin(), x.end());
-    
-    vector<double> newX = x;
-    vector<double> newY = f;
-    
-    std::uniform_real_distribution<double> unif(lower_bound,upper_bound);
-    std::default_random_engine re;
-    for (int i = 0; i < n; i++)
-    {
-        double a_random_double = unif(re);
-        newX.push_back(a_random_double);
-        newY.push_back(Newton.interpolate(coeff,a_random_double));
-        cout << "x = " << a_random_double << '\n';
-        cout << "Newton Interpolation: " << Newton.interpolate(coeff,a_random_double) << '\n';
-    }
-    
-    std::vector<vector<double>> newPoints(2);
-    newPoints[0] = newX;
-    newPoints[1] = newY;
-    
-    return newPoints;
-}
-
-std::vector<vector<double>> getPointsSpline(const vector<double> &x, vector<double> f, int n, Spline cs)
-{
-    double lower_bound = *min_element(x.begin(), x.end());
-    double upper_bound = *max_element(x.begin(), x.end());
-    
-    vector<double> newX = x;
-    vector<double> newY = f;
-    
-    std::uniform_real_distribution<double> unif(lower_bound,upper_bound);
-    std::default_random_engine re;
-    for (int i = 0; i < n; i++)
-    {
-        double a_random_double = unif(re);
-        newX.push_back(a_random_double);
-        newY.push_back(cs.interpolateSpline(a_random_double));
-        cout << "x = " << a_random_double << '\n';
-        cout << "Cubic Spline Interpolation: " << cs.interpolateSpline(a_random_double) << '\n';
-    }
-    
-    std::vector<vector<double>> newPoints(2);
-    newPoints[0] = newX;
-    newPoints[1] = newY;
-    
-    return newPoints;
-}
 
 int main()
 {
     //vector<double> x = {1, 2, 3, 4};
     //vector<double> y = {6, 9, 2, 5};
-    std::vector<std::pair<std::string, std::vector<double>>> dataset_1 = read_csv("/Users/waelaboulezz/Documents/MSc Informatics/coursework_1 2/datasets/part_3/3_dataset_1.csv");
-    std::vector<std::pair<std::string, std::vector<double>>> dataset_2 = read_csv("/Users/waelaboulezz/Documents/MSc Informatics/coursework_1 2/datasets/part_3/3_dataset_2.csv");
+    std::vector<std::pair<std::string, std::vector<double>>> dataset_1 = read_csv("./datasets/part_3/3_dataset_1.csv");
+    std::vector<std::pair<std::string, std::vector<double>>> dataset_2 = read_csv("./datasets/part_3/3_dataset_2.csv");
 
     vector<double> x1 = dataset_1.at(0).second;
     vector<double> y1 = dataset_1.at(1).second;
