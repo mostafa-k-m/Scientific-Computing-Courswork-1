@@ -7,8 +7,6 @@
 #include <random>
 #include <assert.h>
 
-
-
 double get_max_element(std::vector<double> vec)
 {
     double max;
@@ -23,7 +21,7 @@ double get_max_element(std::vector<double> vec)
             max = temp;
         }
     }
-    return(max);
+    return (max);
 }
 
 double get_min_element(std::vector<double> vec)
@@ -40,7 +38,7 @@ double get_min_element(std::vector<double> vec)
             min = temp;
         }
     }
-    return(min);
+    return (min);
 }
 
 #include "Matrix.hpp"
