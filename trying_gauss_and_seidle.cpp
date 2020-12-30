@@ -1,6 +1,4 @@
-#include "Coursework1/Matrix.hpp"
-#include "Coursework1/SolveGaussElimination.hpp"
-#include "Coursework1/SolveSeidle.hpp"
+#include "Coursework1/Coursework1lib.h"
 
 using namespace std;
 
@@ -9,9 +7,9 @@ int main()
 {
     // Multiple examples
 
-    // vector<vector<double>> v ={{2, 1, -1}, {1, 4, 3}, {-1 ,2 ,7}};
-    // Matrix A = Matrix(v);
-    // vector<double> b = {0, 14, 30};
+    vector<vector<double>> v ={{2, 1, -1}, {1, 4, 3}, {-1 ,2 ,7}};
+    Matrix A = Matrix(v);
+    vector<double> b = {0, 14, 30};
 
     // vector<vector<double>> v ={{2, -1, 0}, {1, -3, 1}, {-1, 1 ,-3}};
     // Matrix A = Matrix(v);
@@ -25,18 +23,16 @@ int main()
     // Matrix A = Matrix(v);
     // vector<double> b = {-4, 1, 2, 10};
 
-    vector<vector<double>> v ={
-        {-1,1,-1,1},
-        {1, 1, 1, 1},
-        {8, 4 ,2 ,1},
-        {27, 9, 3, 1}};
-    Matrix A = Matrix(v);
-    vector<double> b = {1, 1, -2, 1};
+    // vector<vector<double>> v ={
+    //     {-1,1,-1,1},
+    //     {1, 1, 1, 1},
+    //     {8, 4 ,2 ,1},
+    //     {27, 9, 3, 1}};
+    // Matrix A = Matrix(v);
+    // vector<double> b = {1, 1, -2, 1};
 
     SolveGaussElimination x = SolveGaussElimination(A, b, true);
-    cout << endl
-         << endl;
 
-    SolveSeidle y = SolveSeidle(A, b, 30);
+    SolveSeidle y = SolveSeidle(A, b, 30, true);
     return 0;
 }

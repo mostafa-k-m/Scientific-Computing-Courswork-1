@@ -11,7 +11,7 @@ public:
 
         A = rearrange_rows(A, A.dim);
 
-        A.scale_matrix();
+        // A.scale_matrix();
 
         bool valid_solution = A.flag_diagonally_dominant();
 
