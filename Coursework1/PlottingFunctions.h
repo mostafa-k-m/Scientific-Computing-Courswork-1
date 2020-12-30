@@ -1,4 +1,6 @@
 #include "../Matplot/matplotlibcpp.h"
+#include <algorithm>
+#include <iterator>
 
 namespace plt = matplotlibcpp;
 
@@ -31,7 +33,7 @@ public:
     {
         vector<vector<double>> line;
         plt::figure_size(1200, 780);
-        plt::plot(x, y);
+        plt::named_plot("Fitted Line", x, y);
         plt::scatter(x_scatter, y_scatter, 10, {{"color", "red"}});
         for (int i = 0; i < x_scatter.size(); ++i)
         {
@@ -48,6 +50,83 @@ public:
         y = y_;
         x_scatter = x_scatter_;
         y_scatter = y_scatter_;
+        filename = filename_;
+    }
+};
+
+std::vector<std::pair<double, double>> zip(const std::vector<double> a, const std::vector<double> b)
+{
+    std::vector<std::pair<double, double>> zipped;
+    for (int i = 0; i < a.size(); ++i)
+    {
+        zipped.push_back(std::make_pair(a[i], b[i]));
+    }
+    return (zipped);
+}
+
+std::vector<std::vector<double>> unzip(const std::vector<std::pair<double, double>> zipped)
+{
+    std::vector<double> a;
+    std::vector<double> b;
+    for (int i = 0; i < zipped.size(); i++)
+    {
+        a.push_back(zipped[i].first);
+        b.push_back(zipped[i].second);
+    }
+    std::vector<std::vector<double>> sorted_vecs;
+    sorted_vecs.push_back(a);
+    sorted_vecs.push_back(b);
+    return (sorted_vecs);
+}
+
+bool compareFunc(std::pair<double, double> &a, std::pair<double, double> &b)
+{
+    return a.first < b.first;
+}
+
+class PlotInterpolation
+{
+public:
+    std::vector<double> x;
+    std::vector<double> y;
+    std::vector<double> x_interpolated;
+    std::vector<double> y_interpolated;
+    std::string filename;
+
+    void gen_plot()
+    {
+        vector<vector<double>> line;
+        plt::figure_size(1200, 780);
+        plt::named_plot("Before Interpolation", x, y, "--r");
+
+        //combine given and interpolated points
+        x.insert(x.end(), x_interpolated.begin(), x_interpolated.end());
+        y.insert(y.end(), y_interpolated.begin(), y_interpolated.end());
+
+        // Zip the vectors together
+        std::vector<std::pair<double, double>> zipped;
+        zipped = zip(x, y);
+
+        std::sort(zipped.begin(), zipped.end(), compareFunc);
+
+        // Write the sorted pairs back to the new vectors
+        std::vector<std::vector<double>> sorted_vecs = unzip(zipped);
+        std::vector<double> x_sorted = sorted_vecs[0];
+        std::vector<double> y_sorted = sorted_vecs[1];
+
+        plt::named_plot("After Interpolation", x_sorted, y_sorted);
+
+        plt::scatter(x_interpolated, y_interpolated, 10, {{"color", "red"}});
+        plt::legend();
+        plt::save("./" + filename);
+    }
+
+    PlotInterpolation(std::vector<double> x_, std::vector<double> y_, std::vector<double> x_interpolated_, std::vector<double> y_interpolated_, std::string filename_)
+    {
+        x = x_;
+        y = y_;
+        x_interpolated = x_interpolated_;
+        y_interpolated = y_interpolated_;
         filename = filename_;
     }
 };
