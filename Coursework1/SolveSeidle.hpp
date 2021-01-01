@@ -58,6 +58,7 @@ public:
             }
             --n_iterations;
         }
+        print_solution(solution, A.dim);
         this->solution > solution;
     }
 };

@@ -97,7 +97,7 @@ public:
         
         for (int i = 0; i < x1.size(); i++)
         {
-            y.push_back(solution[0] + solution[0]*x1[i] + solution[0]*x2[i]);
+            y.push_back(solution[0] + solution[1]*x1[i] + solution[2]*x2[i]);
         }
         if (verbose)
         {
